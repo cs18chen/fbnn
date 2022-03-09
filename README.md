@@ -2,10 +2,12 @@
 
 
 Pre-requisites:
+
 The code is built at least with the following libraries: Python ;  Python Imaging Library ; Matplotlib ; Numpy.
 Install cnn_gp package: https://github.com/cambridge-mlg/cnn-gp
 
 Run Demo
+
 For training deep model for each task, go to the related folder and follow the bellow steps:
 Skin Lesion Segmentation
 1-	Download the ISIC 2018 train dataset from https://challenge.isic-archive.com/data/  link and extract both training dataset and ground truth folders inside the dataset_isic18.
@@ -15,6 +17,7 @@ Skin Lesion Segmentation
 4-  For performance calculation and producing segmentation result, run evaluation.py. It will represent performance measures and will saves related figures and results in output folder.
 
 References
+
 https://github.com/happenwah/FVI_CV
 
 https://github.com/zylye123/CARes-UNet
