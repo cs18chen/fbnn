@@ -9,12 +9,18 @@ Install cnn_gp package: https://github.com/cambridge-mlg/cnn-gp
 Run Demo
 
 For training deep model for each task, go to the related folder and follow the bellow steps:
+
 Skin Lesion Segmentation
+
 1-	Download the ISIC 2018 train dataset from https://challenge.isic-archive.com/data/  link and extract both training dataset and ground truth folders inside the dataset_isic18.
+
 2-	Run Prepare_ISIC2018.py for data preperation and dividing data to train,validation and test sets.
+
 3-	Run run_fvi_seg.py.py for training the proposed model using trainng and validation sets. The model will be train for 100 epochs and it will save the best weights for the valiation set.
+
 4-	Run run_fvi_seg.py.py for test the proposed model using test set.
-4-  For performance calculation and producing segmentation result, run evaluation.py. It will represent performance measures and will saves related figures and results in output folder.
+
+5-  For performance calculation and producing segmentation result, run evaluation.py. It will represent performance measures and will saves related figures and results in output folder.
 
 References
 
