@@ -63,7 +63,7 @@ class CNN_GP_prior:
             padding=0, var_weight=var_weight, var_bias=var_bias),
                            )
         self.model.cuda()
-        #self.model.cpu() #FLOPS      
+     
     def compute_K(self, X):
         assert len(X.size()) == 4
         N = X.size(0)
