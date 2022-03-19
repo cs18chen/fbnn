@@ -1,1 +1,0 @@
-extracted both training dataset and ground truth folders inside the dataset_isic18
