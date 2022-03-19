@@ -19,31 +19,6 @@ def run_runtime_seg(model, test_set, exp_name, S):
 	print('Inference time elapsed (s), mean: {} || std: {}'.format(time_mean, time_std))
 	model.train()
 
-def calibration_per_image(probs, mask, y):
-    mask_probs = mask[:,np.newaxis,:].repeat(probs.shape[1], 1)
-    probs = probs.flatten()[mask_probs.flatten()]
-    mask = mask.flatten().astype('int64')
-    y = y.flatten()[mask]
-    y = np.eye(2)[y.astype('int64')].transpose().flatten()
-    n_levels = 10
-    true_freq = np.linspace(0., 1., n_levels)
-    obs_freq = np.zeros_like(true_freq)
-    pred_freq = np.zeros_like(true_freq)
-    level_prev = 0.
-    for i,level in enumerate(true_freq):
-        mask_level = (probs > level_prev) & (probs <= level)
-        if mask_level.astype(np.float32).sum() < 1.:
-            pred_freq[i] = 0.
-            obs_freq[i] = 0.
-        else:
-            pred_freq[i] = probs[mask_level].mean()
-            obs_freq[i] = y[mask_level].mean()
-        level_prev = level
-    #Calibration score, uniform weighting bins
-    calibration = ((obs_freq - pred_freq) ** 2 * 1.).sum()
-    idx = np.argsort(pred_freq)
-    return obs_freq[idx], pred_freq[idx], calibration
-
 
 
 def plot_per_image(rgb, ground_truth, pred, pred_entropy, probs, mask, dataset, exp_name, idx, deterministic=False):
@@ -83,8 +58,7 @@ def plot_per_image(rgb, ground_truth, pred, pred_entropy, probs, mask, dataset, 
         ax5.tick_params(size=0)
      
     plt.savefig('output/CAFBNN/fig/{}_{}_results_test_pred_{}.pdf'.format(dataset, exp_name, idx), bbox_inches='tight',pad_inches=0.1, dpi=1000)
-    plt.savefig('output/CAFBNN/fig/{}_{}_results_test_pred_{}.jpg'.format(dataset, exp_name, idx), bbox_inches='tight',pad_inches=0.1, dpi=1000)
-    #plt.show()
+    plt.show()
     plt.close()
 import h5py
 
@@ -145,16 +119,9 @@ def test(model, test_loader, num_classes, dataset, exp_name, plot_imgs=True, mkd
 
  
         pred_all = np.concatenate(predictions, 0)
-        ## print(pred_all.shape)
-
         entropy_all = np.concatenate(entropy_uncertainty, 0)
-        ## print(entropy_all.shape)
-
         file = h5py.File('output/CAFBNN/pred_result/' + 'skin_predict_results.h5', 'w')
-        ## file.create_dataset('gt', data=target)
         file.create_dataset('pred', data=pred_all)
-        ## file.create_dataset('origin_img', data=data)
-
         file.create_dataset('entropy', data=entropy_all)
         file.close()
         return test_error, m_jacc
