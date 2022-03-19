@@ -26,7 +26,7 @@ parser.add_argument('--final_epoch', type=int, default=100)
 parser.add_argument('--ft_start', type=int, default=100, help='When to start fine-tuning on full-size images')
 parser.add_argument('--dataset', type=str, default='skin', help='skin')
 
-parser.add_argument('--beta_type', type=str, default='Blundell', help='Normal, Blundell, Soenderby, Standard')
+parser.add_argument('--beta_type', type=str, default='Blundell', help='Normal (beta=1), Blundell (beta2), Soenderby (beta3), Standard (beta1)')
 
 parser.add_argument('--standard_cross_entropy', type=bool, default=False)
 parser.add_argument('--add_cov_diag', type=bool, default=True, help='Add Diagonal component to Q covariance')
@@ -36,9 +36,9 @@ parser.add_argument('--x_inducing_var', type=float, default=0.1, help='Pixel-wis
 parser.add_argument('--n_inducing', type=int, default=1, help='No. of inducing inputs, <= batch_size')
 parser.add_argument('--save_results', type=int, default=100, help='save results every few epochs')#100
 parser.add_argument('--base_dir', type=str, default='./', help='directory in which datasets are contained')
-parser.add_argument('--training_mode', type=str, default='training_mode', help='store_true')
-#parser.add_argument('--test_mode',type=str, default='test_mode', help='store_true')
-#parser.add_argument('--test_runtime_mode', default='test_runtime_mode',help='store_true')
+parser.add_argument('--training_mode', type=str, default='training_mode', help='training')
+#parser.add_argument('--test_mode',type=str, default='test_mode', help='test')
+#parser.add_argument('--test_runtime_mode', default='test_runtime_mode',help='run time')
 args = parser.parse_args()
 
 num_classes= 2
@@ -114,7 +114,7 @@ def get_beta(batch_idx, m, beta_type, epoch, num_epochs):
     return beta
 
 m = math.ceil(len(train_loader) / args.batch_size)
-#m1= len(train_loader)
+
 def train(num_epochs, train_loader, FVI):
 	FVI.train()
 
@@ -126,7 +126,6 @@ def train(num_epochs, train_loader, FVI):
 		if s >= args.ft_start and ft_start_flag == 0:
 			from lib.prior.priors import f_prior_BNN
 			print('Now fine-tuning on full size images')
-		#	train_loader = ft_loader
 			if args.f_prior == 'cnn_gp':
 				FVI.prior = f_prior_BNN((H, W), device, num_channels_output=num_classes)
 			ft_start_flag += 1
